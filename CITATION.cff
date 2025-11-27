@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this tool, please cite it as below."
+title: "Palade Iterator — Palade Conjecture (Minimal Clinical Tool)"
+authors:
+  - family-names: "Marciu"
+    given-names: "Vicențiu Bogdan Ion"
+    affiliation: "Fast Science – Open Research (FS-OR)"
+version: "1.0.0"
+date-released: "2025-11-27"
+url: "https://github.com/FS-OR/Palade-Iterator-Palade-Conjecture"
+repository-code: "https://github.com/FS-OR/Palade-Iterator-Palade-Conjecture"
+abstract: >
+  Minimal browser-based computational tool for iterating Palade FH cohort logic
+  and supporting the Palade Conjecture validation framework in a clinical,
+  point-of-care environment. Part of the Fast Science – Open Research initiative.
