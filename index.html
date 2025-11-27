@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Palade Iterator – Palade Conjecture (FS-OR)</title>
+
+    <meta name="description" content="Minimal clinical cohort iterator for the Palade Conjecture and FH manifestations, part of the Fast Science – Open Research initiative.">
+    <meta name="author" content="Vicențiu Bogdan Ion Marciu">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: transparent;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-section {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #1378f8;
+        }
+
+        .range-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1378f8 0%, #0d5cbf 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(19, 120, 248, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #1378f8 0%, #0d5cbf 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .summary-card h2 {
+            font-size: 48px;
+            margin-bottom: 5px;
+        }
+
+        .summary-card p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        .manifestation-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .manifestation-card:hover {
+            border-color: #1378f8;
+            box-shadow: 0 5px 15px rgba(19, 120, 248, 0.2);
+        }
+
+        .manifestation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .manifestation-name {
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 18px;
+        }
+
+        .prevalence-badge {
+            background: #edf2f7;
+            color: #4a5568;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .stat-item {
+            background: #f7fafc;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .source {
+            font-size: 12px;
+            color: #a0aec0;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .info-box {
+            background: #ebf8ff;
+            border-left: 4px solid #4299e1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 25px;
+            font-size: 13px;
+            color: #2c5282;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+        <h1>🧬 Palade FH Cohort Iterator</h1>
+        <p class="subtitle">Clinical manifestations analysis in young adults (30-45 years)</p>
+
+        <div class="input-section">
+            <div class="input-group">
+                <label>Cohort size (number of people, 30-45 years old):</label>
+                <input type="number" id="cohortSize" min="1" value="10000" placeholder="e.g., 10000">
+            </div>
+
+            <div class="input-group">
+                <label>FH prevalence in general population (%):</label>
+                <div class="range-group">
+                    <div>
+                        <input type="number" id="hfMin" min="0" max="100" step="0.01" value="0.3" placeholder="Min: 0.3">
+                    </div>
+                    <div>
+                        <input type="number" id="hfMax" min="0" max="100" step="0.01" value="0.5" placeholder="Max: 0.5">
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="calculateCohort()">📊 Calculate Scenarios</button>
+        </div>
+
+        <div class="results" id="results">
+            <div class="summary-card">
+                <h2 id="totalWithManifestations">-</h2>
+                <p>Detected using MaRS</p>
+            </div>
+
+            <div class="summary-card">
+                <h2 id="totalEarlyDetection">-</h2>
+                <p>Early detected using Palade FH Detection</p>
+            </div>
+
+            <div id="manifestationsContainer"></div>
+
+            <div class="info-box">
+                <strong>📌 Methodological note:</strong> Calculations are based on prevalence rates from medical literature (JACC 2019, European Atherosclerosis Society 2022, AHA 2021). Scenarios present minimum, average, and maximum values for each clinical manifestation.
+            </div>
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e2e8f0; text-align: center; color: #718096; font-size: 14px;">
+                <p style="margin-bottom: 10px; font-weight: 600; color: #2d3748;">Fast Science - Open Research project</p>
+
+                <p>
+                    <a href="https://linkedin.com/in/bogdan-marciu" target="_blank" style="color: #1378f8; text-decoration: none; margin-right: 15px;">Bogdan Marciu LinkedIn</a>
+                    <a href="https://github.com/FS-OR/Palade-Iterator-Palade-Conjecture" target="_blank" style="color: #1378f8; text-decoration: none;">GitHub Project</a>
+                </p>
+
+                <p style="margin-top:20px; font-size:12px; color:#a0aec0;">
+                    © 2025 Vicențiu Bogdan Ion Marciu — MIT License
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const manifestations = [
+            {
+                name: "Xanthelasmas (on eyelids)",
+                prevalence: { min: 0.25, max: 0.50 },
+                details: "Appear early (before age 40) in 30-40% of untreated heterozygous cases. More frequent in women.",
+                source: "JACC 2019 (n=1,200 FH patients, 35% under 45 had xanthelasmas)"
+            },
+            {
+                name: "Tendinous xanthomas (Achilles tendons, hands, elbows)",
+                prevalence: { min: 0.20, max: 0.30 },
+                details: "Next marker after xanthelasmas; ~25% in the 30-45 age group.",
+                source: "European Atherosclerosis Society Guidelines 2022; Dutch study (n=3,000 FH, 28% with xanthomas under 50)"
+            },
+            {
+                name: "Lipomas / tuberous xanthomas",
+                prevalence: { min: 0.10, max: 0.20 },
+                details: "Less specific, but in severe FH, ~15% in the 30-45 age group.",
+                source: "AHA 2021; Italian study (n=500 FH, 12% with lipomas under 45)"
+            }
+        ];
+
+        function calculateCohort() {
+            const cohortSize = Number(document.getElementById('cohortSize').value);
+            const hfMin = Number(document.getElementById('hfMin').value) / 100;
+            const hfMax = Number(document.getElementById('hfMax').value) / 100;
+
+            if (!Number.isFinite(cohortSize) || cohortSize < 1) {
+                alert('Please enter a valid cohort size!');
+                return;
+            }
+
+            if (!Number.isFinite(hfMin) || !Number.isFinite(hfMax) || hfMin < 0 || hfMax < 0 || hfMin > 1 || hfMax > 1) {
+                alert('FH prevalence values must be between 0 and 100!');
+                return;
+            }
+
+            if (hfMin > hfMax) {
+                alert('Minimum prevalence must be lower than maximum!');
+                return;
+            }
+
+            const hfMean = (hfMin + hfMax) / 2;
+
+            const hfPatientsMin = Math.round(cohortSize * hfMin);
+            const hfPatientsMean = Math.round(cohortSize * hfMean);
+            const hfPatientsMax = Math.round(cohortSize * hfMax);
+
+            const withManifestationsMin = Math.round(hfPatientsMean * 0.50);
+            const withManifestationsMax = Math.round(hfPatientsMean * 0.70);
+
+            document.getElementById('totalWithManifestations').textContent =
+                `${withManifestationsMin} - ${withManifestationsMax}`;
+
+            document.getElementById('totalEarlyDetection').textContent =
+                `${hfPatientsMin} - ${hfPatientsMax}`;
+
+            let html = '';
+
+            manifestations.forEach(m => {
+                const minPatients = Math.round(hfPatientsMean * m.prevalence.min);
+                const maxPatients = Math.round(hfPatientsMean * m.prevalence.max);
+                const meanPatients = Math.round((minPatients + maxPatients) / 2);
+
+                const minPercent = (m.prevalence.min * 100).toFixed(0);
+                const maxPercent = (m.prevalence.max * 100).toFixed(0);
+
+                html += `
+                    <div class="manifestation-card">
+                        <div class="manifestation-header">
+                            <div class="manifestation-name">${m.name}</div>
+                            <div class="prevalence-badge">${minPercent}-${maxPercent}%</div>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-label">MIN Scenario</div>
+                                <div class="stat-value">${minPatients}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">AVERAGE Scenario</div>
+                                <div class="stat-value">${meanPatients}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">MAX Scenario</div>
+                                <div class="stat-value">${maxPatients}</div>
+                            </div>
+                        </div>
+                        <div class="source">📚 ${m.source}</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('manifestationsContainer').innerHTML = html;
+            document.getElementById('results').classList.add('show');
+        }
+    </script>
+
+</body>
+</html>
